@@ -144,7 +144,6 @@ class _UsuarioState extends State<Usuario> {
                 )
               ),
               Text(widget.usuario, style: TextStyle(fontSize: 30)),
-              Text('Correo', style: TextStyle(fontSize: 30)),
               ElevatedButton(
                 onPressed: (){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
