@@ -95,6 +95,31 @@ class _RegistroState extends State<Registro> {
                         )
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(onPressed: (){
+
+                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return Registro();
+                              }
+                          ), (route) => false);
+                          FocusScope.of(context).unfocus();
+
+
+                        }, child: Text('Log in',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               )
             ],
