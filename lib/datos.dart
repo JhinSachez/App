@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:maps/menu.dart';
 
 class EditarDatos extends StatefulWidget {
-  var usuario;
-  EditarDatos(this.usuario,{super.key});
+
+  const EditarDatos({super.key});
 
   @override
   State<EditarDatos> createState() => _EditarDatosState();
@@ -16,7 +16,7 @@ class _EditarDatosState extends State<EditarDatos> {
       appBar: AppBar(
         title: Text('Editar datos del usuario'),
       ),
-      endDrawer: Menu(widget.usuario),
+      endDrawer: Menu(),
     );
   }
 }

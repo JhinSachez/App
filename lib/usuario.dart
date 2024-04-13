@@ -5,20 +5,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
-
+import 'JsonModels/users.dart';
 import 'login.dart';
 import 'menu.dart';
 
 
-class Usuario extends StatefulWidget {
-  var usuario;
-   Usuario(this.usuario, {super.key});
+class Perfil extends StatefulWidget {
+  final Users? perfiles;
+  const Perfil({super.key, this.perfiles});
 
   @override
-  State<Usuario> createState() => _UsuarioState();
+  State<Perfil> createState() => _PerfilState();
 }
 
-class _UsuarioState extends State<Usuario> {
+class _PerfilState extends State<Perfil> {
+  get perfiles => ;
+
+
 
   Future cerrar_sesion() async {
 
@@ -64,7 +67,7 @@ class _UsuarioState extends State<Usuario> {
       });
     }
   }
-  
+
   seleccionar(){
     showDialog(
         context: context,
@@ -74,11 +77,11 @@ class _UsuarioState extends State<Usuario> {
                 child: Row(
                   children: [
                     InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        selecionar_imagen(1);
-                      },
-                      child: Container(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          selecionar_imagen(1);
+                        },
+                        child: Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 border: Border(
@@ -91,39 +94,39 @@ class _UsuarioState extends State<Usuario> {
                                 Text('Tomar foto', style: TextStyle(fontSize: 20),)
                               ],
                             )
-                          )
+                        )
                     ),
                     InkWell(
-                      onTap: (){
-                        Navigator.of(context).pop();
-                        selecionar_imagen(2);
-                      },
-                      child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Image.asset('imagenes/Galeria.png', width: 50),
-                              Text('Usar galeria', style: TextStyle(fontSize: 20),)
-                            ],
-                          )
-                      )
+                        onTap: (){
+                          Navigator.of(context).pop();
+                          selecionar_imagen(2);
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Image.asset('imagenes/Galeria.png', width: 50),
+                                Text('Usar galeria', style: TextStyle(fontSize: 20),)
+                              ],
+                            )
+                        )
                     )
                   ],
                 ),
               )
           );
         }
-        );
+    );
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Usuario'),
       ),
-        endDrawer: Menu(widget.usuario),
+      endDrawer: Menu(),
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
@@ -131,24 +134,24 @@ class _UsuarioState extends State<Usuario> {
             children: [
               imagen == null ? Center() : Image.file(imagen!),
               InkWell(
-                onTap: (){
-                  seleccionar();
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Cambiar imagen', style: TextStyle(fontSize: 20)),
-                    Icon(CupertinoIcons.pencil_circle_fill, size: 30)
-                  ],
-                )
+                  onTap: (){
+                    seleccionar();
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(perfiles!.usrName??""),
+                      Icon(CupertinoIcons.pencil_circle_fill, size: 30)
+                    ],
+                  )
               ),
-              Text(widget.usuario, style: TextStyle(fontSize: 30)),
+              Text('Nombre de usuario', style: TextStyle(fontSize: 30)),
               ElevatedButton(
                 onPressed: (){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                       builder: (BuildContext context) {
-                        return EditarDatos(widget.usuario);
+                        return EditarDatos();
                       }
                   ), (route) => false);
                 },

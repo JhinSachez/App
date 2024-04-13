@@ -6,6 +6,7 @@ import 'package:maps/JsonModels/users.dart';
 import 'package:maps/SQLite/sqlite.dart';
 import 'package:maps/password.dart';
 import 'package:maps/registro.dart';
+import 'package:maps/usuario.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -17,18 +18,20 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final c_usuario = TextEditingController();
-  final c_pass = TextEditingController();
+  final usuario = TextEditingController();
+  final pass = TextEditingController();
   bool isLoggingTrue = false;
+  bool isChecked =  false;
 
   final db = DatabaseHelper();
 
   login() async{
-    var response = await db.login(Users(usrName: c_usuario.text, usrPassword: c_pass.text));
-    if(response == true){
+    Users? usrDetails = await db.getUser(usuario.text);
+    var res = await db.login(Users(usrName: usuario.text, usrPassword: pass.text));
+    if(res == true){
       if(!mounted) return;
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Inicio(c_usuario)));
+          context, MaterialPageRoute(builder: (context) => Perfil(perfiles: usrDetails,)));
     } else {
       isLoggingTrue = true;
     }
@@ -68,7 +71,7 @@ class _LoginState extends State<Login> {
                           }
                           return null;
                         },
-                        controller: c_usuario,
+                        controller: usuario,
                         keyboardType: TextInputType.text,
                         autocorrect: true,
                         textCapitalization: TextCapitalization.words,
@@ -100,7 +103,7 @@ class _LoginState extends State<Login> {
                           }
                           return null;
                         },
-                        controller: c_pass,
+                        controller: pass,
                         keyboardType: TextInputType.text,
                         autocorrect: true,
                         textCapitalization: TextCapitalization.words,
@@ -141,13 +144,25 @@ class _LoginState extends State<Login> {
                           )
                         ],
                       ),
+                      ListTile(
+                        horizontalTitleGap: 1,
+                        title: Text('Remember me', style: TextStyle(fontSize: 20)),
+                        leading: Checkbox(
+                          value: isChecked,
+                          onChanged: (value){
+                            setState(() {
+                              isChecked = !isChecked;
+                            });
+                          },
+                        ),
+                      ),
                       SizedBox(
-                        height: 20,
+                        height: 5,
                       ),
                       isLoggingTrue
-                          ? const Text('El usuario o la contraseña son incorrectos', style: TextStyle(color: Colors.red, fontSize: 15)):
+                          ? const Text('El usuario o la contraseña son incorrectos', style: TextStyle(color: Colors.red, fontSize: 17)):
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Row(
                         children: [

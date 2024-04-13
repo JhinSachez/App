@@ -5,10 +5,12 @@ import 'package:maps/interes.dart';
 import 'package:maps/puntos.dart';
 import 'package:maps/usuario.dart';
 
+import 'JsonModels/users.dart';
+
 
 class Menu extends StatefulWidget {
-  var usuario;
-   Menu(this.usuario, {super.key});
+  final Users? perfil;
+  const Menu({super.key, this.perfil});
 
   @override
   State<Menu> createState() => _MenuState();
@@ -28,7 +30,7 @@ class _MenuState extends State<Menu> {
             onTap: (){
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return Inicio(widget.usuario);
+                    return Inicio();
                   }
               ), (route) => false);
             },
@@ -39,7 +41,7 @@ class _MenuState extends State<Menu> {
             onTap: (){
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return Marcadores(widget.usuario);
+                    return Marcadores();
                   }
               ), (route) => false);
             },
@@ -50,7 +52,7 @@ class _MenuState extends State<Menu> {
             onTap: (){
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return Interes(widget.usuario);
+                    return Interes();
                   }
               ), (route) => false);
             },
@@ -61,7 +63,7 @@ class _MenuState extends State<Menu> {
             onTap: (){
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return Usuario(widget.usuario);
+                    return Perfil();
                   }
               ), (route) => false);
             },

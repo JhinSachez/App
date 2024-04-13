@@ -1,12 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:maps/SQLite/sqlite.dart';
+import 'JsonModels/users.dart';
 import 'menu.dart';
 
 
 class Inicio extends StatefulWidget {
-  var usuario;
-   Inicio(this.usuario, {super.key});
+   const Inicio({super.key});
 
   @override
   State<Inicio> createState() => _InicioState();
@@ -31,7 +32,7 @@ class _InicioState extends State<Inicio> {
         appBar: AppBar(
           title: Text('Inicio'),
         ),
-      endDrawer: Menu(widget.usuario),
+      endDrawer: Menu(),
       body: Column(
         children: [
           SizedBox(

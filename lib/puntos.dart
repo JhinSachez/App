@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'menu.dart';
 
 class Marcadores extends StatefulWidget {
-  var usuario;
-  Marcadores(this.usuario,{super.key});
+
+  const Marcadores({super.key});
 
   @override
   State<Marcadores> createState() => _MarcadoresState();
@@ -17,7 +17,7 @@ class _MarcadoresState extends State<Marcadores> {
       appBar: AppBar(
         title: Text('Apartar'),
       ),
-      endDrawer: Menu(widget.usuario),
+      endDrawer: Menu(),
 
     );
   }

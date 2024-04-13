@@ -14,10 +14,20 @@ class Registro extends StatefulWidget {
 class _RegistroState extends State<Registro> {
 
   final usuario = TextEditingController();
-  final pass = TextEditingController();
+  final password = TextEditingController();
   final conpass = TextEditingController();
+  final email = TextEditingController();
 
   final formkey = GlobalKey<FormState>();
+
+  final db = DatabaseHelper();
+  signup()async{
+    var res = await db.signup(Users(email: email.text, usrName: usuario.text, usrPassword: password.text));
+    if(res>0){
+      if(!mounted)return;
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> const Login()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +74,40 @@ class _RegistroState extends State<Registro> {
                           )
                       ),
                     ),
+                    Text('Agregue un email'),
+                    TextFormField(
+                      controller: email,
+                      validator: (value){
+                        if(value!.isEmpty){
+                          return 'email requerido';
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.text,
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                      decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2
+                              )
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2
+                              )
+                          )
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
                     Text('Agregue una contraseña'),
                     TextFormField(
-                      controller: pass,
+                      controller: password,
                       validator: (value){
                         if(value!.isEmpty){
                           return 'contraseña requerida';
@@ -105,7 +143,7 @@ class _RegistroState extends State<Registro> {
                       validator: (value){
                         if(value!.isEmpty){
                           return 'contraseña requerida';
-                        } else if (pass.text != conpass.text){
+                        } else if (password.text != conpass.text){
                           return "las contraseñas no coinciden";
                         }
                         return null;
@@ -138,16 +176,7 @@ class _RegistroState extends State<Registro> {
                         Expanded(
                           flex: 1,
                           child: ElevatedButton(onPressed: (){
-                            if(formkey.currentState!.validate()){
-                              final db = DatabaseHelper();
-                              db.signup(Users(usrName: usuario.text, usrPassword: pass.text)).whenComplete(() {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                        const Login()));
-                              });
-                            }
+                            signup();
 
 
                             FocusScope.of(context).unfocus();
