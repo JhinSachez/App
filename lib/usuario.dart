@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:maps/SQLite/sqlite.dart';
 import 'package:maps/datos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,15 +13,14 @@ import 'menu.dart';
 
 class Perfil extends StatefulWidget {
   final Users? perfiles;
-  const Perfil({super.key, this.perfiles});
+  Perfil({super.key, this.perfiles});
 
   @override
   State<Perfil> createState() => _PerfilState();
 }
 
 class _PerfilState extends State<Perfil> {
-  get perfiles => ;
-
+  get perfiles => widget.perfiles;
 
 
   Future cerrar_sesion() async {
@@ -141,12 +141,13 @@ class _PerfilState extends State<Perfil> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(perfiles!.usrName??""),
+                      Text('Cambiar imagen'),
                       Icon(CupertinoIcons.pencil_circle_fill, size: 30)
                     ],
                   )
               ),
-              Text('Nombre de usuario', style: TextStyle(fontSize: 30)),
+              Text(perfiles!.usrName??"",style: TextStyle(color: Colors.red)),
+              Text(perfiles!.email??"",style: TextStyle(fontSize: 20)),
               ElevatedButton(
                 onPressed: (){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(

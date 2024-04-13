@@ -32,7 +32,14 @@ class _RegistroState extends State<Registro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: GestureDetector(
+        onTap:(){
+      final FocusScopeNode focus = FocusScope.of(context);
+      if(!focus.hasPrimaryFocus && focus.hasFocus){
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    },
+     child:  Center(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 50, horizontal: 30),
           child: ListView(
@@ -197,6 +204,7 @@ class _RegistroState extends State<Registro> {
           ),
         ),
       ),
+    )
     );
   }
 }
