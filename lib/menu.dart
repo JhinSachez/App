@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maps/Inicio.dart';
 import 'package:maps/interes.dart';
 import 'package:maps/puntos.dart';
 import 'package:maps/usuario.dart';
 
-import 'JsonModels/users.dart';
+import 'home.dart';
 
 
 class Menu extends StatefulWidget {
-  final Users? perfil;
-  const Menu({super.key, this.perfil});
+  const Menu({super.key});
 
   @override
   State<Menu> createState() => _MenuState();
 }
 
 class _MenuState extends State<Menu> {
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

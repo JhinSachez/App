@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:maps/Inicio.dart';
+import 'package:maps/home.dart';
 import 'package:maps/login.dart';
+import 'package:maps/userPreferences/user_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.lightBlue),
-      home: const Login(),
+      home: FutureBuilder(
+        future: RememberUserPrefs.readUserInfo(),
+        builder: (context, dataSnapShot){
+          if(dataSnapShot.data == null){
+            return Login();
+          }else{
+            return Inicio();
+          }
+        }
+      ),
       debugShowCheckedModeBanner: false,
       navigatorObservers: [FlutterSmartDialog.observer],
       builder: FlutterSmartDialog.init(),

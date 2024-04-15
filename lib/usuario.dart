@@ -1,26 +1,38 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maps/SQLite/sqlite.dart';
+import 'package:get/get.dart';
 import 'package:maps/datos.dart';
+import 'package:maps/userPreferences/current_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
-import 'JsonModels/users.dart';
 import 'login.dart';
 import 'menu.dart';
 
 
 class Perfil extends StatefulWidget {
-  final Users? perfiles;
-  Perfil({super.key, this.perfiles});
+  Perfil({super.key});
 
   @override
   State<Perfil> createState() => _PerfilState();
 }
 
 class _PerfilState extends State<Perfil> {
-  get perfiles => widget.perfiles;
+
+  final CurrentUser _currentUser = Get.put(CurrentUser());
+
+  Widget userInfoItemProfile(String userData){
+    return Container(
+      decoration: BoxDecoration(
+      ),
+      child: Column(
+        children: [
+          Text(userData, style: TextStyle(fontSize: 20),)
+        ],
+      ),
+    );
+  }
 
 
   Future cerrar_sesion() async {
@@ -146,8 +158,8 @@ class _PerfilState extends State<Perfil> {
                     ],
                   )
               ),
-              Text(perfiles!.usrName??"",style: TextStyle(color: Colors.red)),
-              Text(perfiles!.email??"",style: TextStyle(fontSize: 20)),
+              userInfoItemProfile(_currentUser.user.user_name),
+              userInfoItemProfile(_currentUser.user.user_email),
               ElevatedButton(
                 onPressed: (){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(

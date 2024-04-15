@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maps/JsonModels/users.dart';
-import 'package:maps/SQLite/sqlite.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:maps/api_connection/api_connection.dart';
 import 'package:maps/login.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'model/user.dart';
 
 class Registro extends StatefulWidget {
   const Registro({super.key});
@@ -15,17 +21,68 @@ class _RegistroState extends State<Registro> {
 
   final usuario = TextEditingController();
   final password = TextEditingController();
-  final conpass = TextEditingController();
   final email = TextEditingController();
-
   final formkey = GlobalKey<FormState>();
 
-  final db = DatabaseHelper();
-  signup()async{
-    var res = await db.signup(Users(email: email.text, usrName: usuario.text, usrPassword: password.text));
-    if(res>0){
-      if(!mounted)return;
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> const Login()));
+  validateUserEmail() async{
+    try
+    {
+      var res = await http.post(
+        Uri.parse(API.validateEmail),
+        body: {
+          'user_email': email.text.trim(),
+        }
+      );
+
+      if(res.statusCode == 200){
+        var resBodyOfValidateEmail = jsonDecode(res.body);
+
+        if(resBodyOfValidateEmail['emailFound'] == true){
+          Fluttertoast.showToast(msg: "El email ya esta en uso");
+        } else{
+          registarAndSaveUserRecord();
+        }
+      }
+    }
+    catch(e)
+    {
+
+    }
+  }
+
+  registarAndSaveUserRecord() async{
+    User userModel = User(
+      1,
+      usuario.text.trim(),
+      email.text.trim(),
+      password.text.trim(),
+    );
+
+    try{
+     var res = await http.post(
+        Uri.parse(API.singUp),
+        body: userModel.toJson(),
+      );
+
+      if(res.statusCode == 200){
+        var resBodyOfSignUp = jsonDecode(res.body);
+        if(resBodyOfSignUp['success'] == true){
+          Fluttertoast.showToast(msg: "Registro guardado");
+          setState(() {
+            usuario.clear();
+            email.clear();
+            password.clear();
+          });
+          Get.to(Login());
+        } else {
+          Fluttertoast.showToast(msg: "Ah ocurrido un error, vuelva a intentarlo");
+
+        }
+      }
+    }
+    catch(e){
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 
@@ -58,7 +115,7 @@ class _RegistroState extends State<Registro> {
                       controller: usuario,
                       validator: (value){
                         if(value!.isEmpty){
-                          return 'usuario requerido';
+                          return 'Usuario requerido';
                         }
                         return null;
                       },
@@ -86,7 +143,7 @@ class _RegistroState extends State<Registro> {
                       controller: email,
                       validator: (value){
                         if(value!.isEmpty){
-                          return 'email requerido';
+                          return 'Email requerido';
                         }
                         return null;
                       },
@@ -117,41 +174,7 @@ class _RegistroState extends State<Registro> {
                       controller: password,
                       validator: (value){
                         if(value!.isEmpty){
-                          return 'contraseña requerida';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.text,
-                      autocorrect: true,
-                      textCapitalization: TextCapitalization.words,
-                      obscureText: true,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2
-                              )
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2
-                              )
-                          )
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text('Confirme la contraseña'),
-                    TextFormField(
-                      controller: conpass,
-                      validator: (value){
-                        if(value!.isEmpty){
-                          return 'contraseña requerida';
-                        } else if (password.text != conpass.text){
-                          return "las contraseñas no coinciden";
+                          return 'Contraseña requerida';
                         }
                         return null;
                       },
@@ -183,8 +206,9 @@ class _RegistroState extends State<Registro> {
                         Expanded(
                           flex: 1,
                           child: ElevatedButton(onPressed: (){
-                            signup();
-
+                            if(formkey.currentState!.validate()){
+                              validateUserEmail();
+                            }
 
                             FocusScope.of(context).unfocus();
 

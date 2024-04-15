@@ -1,13 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:maps/Inicio.dart';
-import 'package:maps/JsonModels/users.dart';
-import 'package:maps/SQLite/sqlite.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:maps/password.dart';
 import 'package:maps/registro.dart';
+import 'package:maps/userPreferences/user_preferences.dart';
 import 'package:maps/usuario.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import 'api_connection/api_connection.dart';
+import 'home.dart';
+import 'model/user.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,28 +24,47 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final usuario = TextEditingController();
+  final email = TextEditingController();
   final pass = TextEditingController();
   bool isLoggingTrue = false;
-  bool isChecked =  false;
+  final formkey = GlobalKey<FormState>();
 
-  final db = DatabaseHelper();
 
-  login() async{
-    Users? usrDetails = await db.getUser(usuario.text);
-    var res = await db.login(Users(usrName: usuario.text, usrPassword: pass.text));
-    if(res == true){
-      if(!mounted) return;
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Perfil(perfiles: usrDetails,)));
-    } else {
-      isLoggingTrue = true;
+  loginUserNow() async{
+    try{
+      var res = await http.post(
+        Uri.parse(API.login),
+        body: {
+          "user_email": email.text.trim(),
+          "user_password": pass.text.trim(),
+        },
+      );
+
+      if(res.statusCode == 200){
+        var resBodyOfLogin = jsonDecode(res.body);
+        if(resBodyOfLogin['success'] == true){
+          Fluttertoast.showToast(msg: "Haz ingresado ");
+
+          User userInfo = User.fromJson(resBodyOfLogin["userData"]);
+          await RememberUserPrefs.storeUserInfo(userInfo);
+          
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+              builder: (BuildContext context) {
+                return Inicio();
+              }
+          ), (route) => false);
+        } else {
+          Fluttertoast.showToast(msg: "Escriba bien los datos, vuelva a intentarlo");
+
+        }
+      }
+    }catch(e){
+      print("Error :: " + e.toString());
     }
   }
 
 
 
-  final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,17 +92,17 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         validator: (value){
                           if(value!.isEmpty){
-                            return "usuario requerido";
+                            return "email requerido";
                           }
                           return null;
                         },
-                        controller: usuario,
+                        controller: email,
                         keyboardType: TextInputType.text,
                         autocorrect: true,
                         textCapitalization: TextCapitalization.words,
                         style: TextStyle(color: Colors.black, fontSize: 20),
                         decoration: InputDecoration(
-                          hintText: 'Username',
+                          hintText: 'email',
                           hintStyle: TextStyle(color: Colors.grey),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -144,23 +169,6 @@ class _LoginState extends State<Login> {
                           )
                         ],
                       ),
-                      ListTile(
-                        horizontalTitleGap: 1,
-                        title: Text('Remember me', style: TextStyle(fontSize: 20)),
-                        leading: Checkbox(
-                          value: isChecked,
-                          onChanged: (value){
-                            setState(() {
-                              isChecked = !isChecked;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      isLoggingTrue
-                          ? const Text('El usuario o la contraseña son incorrectos', style: TextStyle(color: Colors.red, fontSize: 17)):
                       SizedBox(
                         height: 5,
                       ),
@@ -170,7 +178,7 @@ class _LoginState extends State<Login> {
                             flex: 1,
                             child: ElevatedButton(onPressed: (){
                               if(formkey.currentState!.validate()){
-                                login();
+                              loginUserNow();
                               }
                               FocusScope.of(context).unfocus();
                             }, child: Text('Sign In',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
