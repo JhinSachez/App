@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -10,7 +9,6 @@ import 'package:maps/userPreferences/user_preferences.dart';
 import 'package:maps/usuario.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import 'api_connection/api_connection.dart';
 import 'home.dart';
 import 'model/user.dart';
@@ -24,7 +22,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final email = TextEditingController();
+  //final usuario = TextEditingController();
+  final user = TextEditingController();
   final pass = TextEditingController();
   bool isLoggingTrue = false;
   final formkey = GlobalKey<FormState>();
@@ -33,9 +32,9 @@ class _LoginState extends State<Login> {
   loginUserNow() async{
     try{
       var res = await http.post(
-        Uri.parse(API.login),
+        Uri.http('housemanager.website', '/clase_apps/php/login.php'),
         body: {
-          "user_email": email.text.trim(),
+          "user_name": user.text.trim(),
           "user_password": pass.text.trim(),
         },
       );
@@ -62,6 +61,30 @@ class _LoginState extends State<Login> {
       print("Error :: " + e.toString());
     }
   }
+
+  /*Future<void> ingresar() async{
+    var url = Uri.http('housemanager.website', '/clase_apps/php/login.php');
+
+    var response = await http.post(url, body: {
+      'usuario' : usuario,
+      'pass' : pass
+    });
+    var datos = jsonDecode(response.body);
+
+    if(datos['respuesta'] == '1'){
+
+      /*Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Bienvenida(usuario);
+          }
+      ), (route) => false);*/
+
+    } else {
+      print(datos['mensaje']);
+    }
+
+    //Navigator.of(context).pop();
+  }*/
 
 
 
@@ -96,7 +119,7 @@ class _LoginState extends State<Login> {
                           }
                           return null;
                         },
-                        controller: email,
+                        controller: user,
                         keyboardType: TextInputType.text,
                         autocorrect: true,
                         textCapitalization: TextCapitalization.words,
@@ -181,9 +204,9 @@ class _LoginState extends State<Login> {
                               loginUserNow();
                               }
                               FocusScope.of(context).unfocus();
-                            }, child: Text('Sign In',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                            }, child: Text('Login',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black
+                                  backgroundColor: Colors.orange
                               ),
                             ),
                           ),
@@ -208,9 +231,9 @@ class _LoginState extends State<Login> {
                               FocusScope.of(context).unfocus();
                   
                   
-                            }, child: Text('Log in',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                            }, child: Text('Sign in',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black
+                                  backgroundColor: Colors.orange
                               ),
                             ),
                           ),

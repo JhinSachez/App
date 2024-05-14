@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maps/interes.dart';
+import 'package:maps/opiniones.dart';
 import 'package:maps/puntos.dart';
 import 'package:maps/usuario.dart';
 
@@ -56,6 +57,17 @@ class _MenuState extends State<Menu> {
               ), (route) => false);
             },
             title: Text('Lugares de interes'),
+            leading: Icon(Icons.map),
+          ),
+          ListTile(
+            onTap: (){
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return Opiniones();
+                  }
+              ), (route) => false);
+            },
+            title: Text('Opiniones'),
             leading: Icon(Icons.map),
           ),
           ListTile(

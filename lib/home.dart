@@ -11,14 +11,14 @@ class Inicio extends StatelessWidget {
 
 
     List<String> imagelist = [
-      "imagenes/Imagen1.jpg",
-      "imagenes/Imagen2.jpg",
-      "imagenes/Imagen3.jpg",
-      "imagenes/Imagen4.jpg",
-      "imagenes/Imagen5.jpg",
-      "imagenes/Imagen6.jpg",
-      "imagenes/Imagen7.jpg",
-      "imagenes/Imagen8.jpg",
+      "imagenes/casa/Imagen1.jpg",
+      "imagenes/casa/Imagen2.jpg",
+      "imagenes/casa/Imagen3.jpg",
+      "imagenes/casa/Imagen4.jpg",
+      "imagenes/casa/Imagen5.jpg",
+      "imagenes/casa/Imagen6.jpg",
+      "imagenes/casa/Imagen7.jpg",
+      "imagenes/casa/Imagen8.jpg",
     ];
 
 

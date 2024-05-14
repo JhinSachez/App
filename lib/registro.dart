@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:maps/api_connection/api_connection.dart';
 import 'package:maps/login.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
+import 'package:maps/userPreferences/user_preferences.dart';
+import 'package:path/path.dart' as path;
+import 'home.dart';
 import 'model/user.dart';
 
 class Registro extends StatefulWidget {
@@ -28,7 +29,7 @@ class _RegistroState extends State<Registro> {
     try
     {
       var res = await http.post(
-        Uri.parse(API.validateEmail),
+        Uri.http('housemanager.website', '/clase_apps/php/validate_email.php'),
         body: {
           'user_email': email.text.trim(),
         }
@@ -41,6 +42,7 @@ class _RegistroState extends State<Registro> {
           Fluttertoast.showToast(msg: "El email ya esta en uso");
         } else{
           registarAndSaveUserRecord();
+
         }
       }
     }
@@ -60,25 +62,51 @@ class _RegistroState extends State<Registro> {
 
     try{
      var res = await http.post(
-        Uri.parse(API.singUp),
+        Uri.http('housemanager.website', '/clase_apps/php/signup.php'),
         body: userModel.toJson(),
       );
 
-      if(res.statusCode == 200){
-        var resBodyOfSignUp = jsonDecode(res.body);
-        if(resBodyOfSignUp['success'] == true){
-          Fluttertoast.showToast(msg: "Registro guardado");
-          setState(() {
-            usuario.clear();
-            email.clear();
-            password.clear();
-          });
-          Get.to(Login());
-        } else {
-          Fluttertoast.showToast(msg: "Ah ocurrido un error, vuelva a intentarlo");
+     if(res.statusCode == 200){
+       var resBodyOfSignUp = jsonDecode(res.body);
+       if(resBodyOfSignUp['success'] == true){
+         Fluttertoast.showToast(msg: "Se ha registrado correctamente");
 
-        }
-      }
+         try{
+           var res = await http.post(
+             Uri.http('housemanager.website','/clase_apps/php/login.php'),
+             body: {
+               "user_name": usuario.text.trim(),
+               "user_password": password.text.trim(),
+             },
+           );
+
+           var resBodyOfLogin = jsonDecode(res.body);
+           Fluttertoast.showToast(msg: "Logged in.");
+
+
+           User userInfo = User.fromJson(resBodyOfLogin["userData"]);
+           await RememberUserPrefs.storeUserInfo(userInfo);
+
+           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+               builder: (BuildContext context) {
+                 return Inicio();
+               }
+           ), (route) => false);
+         }
+         catch(errorMsg)
+         {
+           print("Error :: " + errorMsg.toString());
+         }
+       }
+       else{
+         Fluttertoast.showToast(msg: "Error Occurred, try again.");
+         setState(() {
+           usuario.clear();
+           email.clear();
+           password.clear();
+         });
+       }
+     }
     }
     catch(e){
       print(e.toString());
@@ -208,14 +236,15 @@ class _RegistroState extends State<Registro> {
                           child: ElevatedButton(onPressed: (){
                             if(formkey.currentState!.validate()){
                               validateUserEmail();
+
                             }
 
                             FocusScope.of(context).unfocus();
 
 
-                          }, child: Text('Log in',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                          }, child: Text('Create',style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black
+                                backgroundColor: Colors.orange
                             ),
                           ),
                         ),

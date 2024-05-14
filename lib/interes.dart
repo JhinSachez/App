@@ -25,7 +25,26 @@ class _InteresState extends State<Interes> {
             children: [
               Column(
                 children: [
-                  
+                  Image.asset("imagenes/Interes/I1.jpg"),
+                  Text("Malecon Mazatlán",style: TextStyle(fontSize: 20)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Image.asset("imagenes/Interes/I2.jpg"),
+                  Text("Nuevo Acuario Mazatlán",style: TextStyle(fontSize: 20)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Image.asset("imagenes/Interes/I3.jpg"),
+                  Text("Faro con mirador de cristal",style: TextStyle(fontSize: 20)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Image.asset("imagenes/Interes/I4.jpg"),
+                  Text("Plazuela Machado",style: TextStyle(fontSize: 20)),
+                  SizedBox(
+                    height: 10,
+                  ),
                 ],
               )
             ],
